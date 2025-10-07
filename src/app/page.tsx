@@ -1,13 +1,12 @@
-import { getAllFarms, calculateOverallMetrics, Farm } from '@/lib/data';
+import { getAllFarms, getOverallMetrics, Farm } from '@/mock/util';
 import Link from 'next/link';
 import { RefreshButton } from '@/components/RefreshButton';
 
-// Enable ISR with 30 second revalidation
 export const revalidate = 30;
 
 async function getFarmsData() {
   const farms = getAllFarms();
-  const metrics = calculateOverallMetrics(farms);
+  const metrics = getOverallMetrics(farms);
   return { farms, metrics };
 }
 
@@ -16,7 +15,7 @@ function formatNumber(num: number): string {
 }
 
 function getActiveCrops(farm: Farm): string {
-  const activeCrops = farm.crops.filter(crop => crop.status === 'in progress');
+  const activeCrops = farm.crops.filter(crop => crop.status === 'IN_PROGRESS');
   return activeCrops.length > 0 ? activeCrops.map(crop => crop.crop_name).join(', ') : 'None';
 }
 
@@ -35,7 +34,6 @@ export default async function Dashboard() {
           <RefreshButton />
         </div>
 
-        {/* Metrics Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Total Farms</h3>

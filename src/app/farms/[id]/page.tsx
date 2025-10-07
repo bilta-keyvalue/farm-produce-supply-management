@@ -1,8 +1,6 @@
-import { getFarmById, calculateFarmMetrics, Farm } from '@/lib/data';
-import Link from 'next/link';
+import { getFarmById, getFarmMetrics } from '@/mock/util';
 import { notFound } from 'next/navigation';
 
-// Enable caching for farm detail pages
 export const revalidate = 60;
 
 function formatNumber(num: number): string {
@@ -27,19 +25,19 @@ function formatDate(dateString: string): string {
   }).format(date);
 }
 
-function getStatusBadge(status: 'harvested' | 'in progress') {
+function getStatusBadge(status: 'HARVESTED' | 'IN_PROGRESS') {
   const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
   
-  if (status === 'harvested') {
+  if (status === 'HARVESTED') {
     return (
       <span className={`${baseClasses} bg-green-100 text-green-800`}>
-        Harvested
+        HARVESTED
       </span>
     );
   } else {
     return (
       <span className={`${baseClasses} bg-yellow-100 text-yellow-800`}>
-        In Progress
+        IN_PROGRESS
       </span>
     );
   }
@@ -52,7 +50,7 @@ export default async function FarmDetailPage({ params }: { params: { id: string 
     notFound();
   }
 
-  const metrics = calculateFarmMetrics(farm);
+  const metrics = getFarmMetrics(farm);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

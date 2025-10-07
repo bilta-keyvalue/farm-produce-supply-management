@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getFarmById, calculateFarmMetrics } from '@/lib/data';
+import { getFarmById, getFarmMetrics } from '@/mock/util';
 
 export async function GET(
   request: Request,
@@ -15,7 +15,7 @@ export async function GET(
       );
     }
 
-    const metrics = calculateFarmMetrics(farm);
+    const metrics = getFarmMetrics(farm);
     
     return NextResponse.json({
       farm,

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getAllFarms, calculateOverallMetrics } from '@/lib/data';
+import { getAllFarms, getFarmMetrics } from '@/mock/util';
 
 export async function GET() {
   try {
     const farms = getAllFarms();
-    const metrics = calculateOverallMetrics(farms);
+    const metrics = getFarmMetrics(farms);
     
     return NextResponse.json({
       farms,

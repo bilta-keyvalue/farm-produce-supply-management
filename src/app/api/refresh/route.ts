@@ -3,10 +3,8 @@ import { revalidatePath } from 'next/cache';
 
 export async function POST() {
   try {
-    // Revalidate the dashboard page
     revalidatePath('/');
     
-    // Revalidate all farm detail pages
     revalidatePath('/farms/[id]', 'page');
     
     return NextResponse.json({ 

@@ -13,7 +13,6 @@ export function RefreshButton() {
       });
       
       if (response.ok) {
-        // Reload the page to show updated data
         window.location.reload();
       } else {
         console.error('Failed to refresh data');
