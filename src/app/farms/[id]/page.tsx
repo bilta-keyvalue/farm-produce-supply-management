@@ -22,7 +22,7 @@ function getStatusBadge(status: 'HARVESTED' | 'IN_PROGRESS') {
 }
 
 const getFarm = async (id: string) => {
-  const response = await fetch(`http://localhost:3002/api/farms/${id}`, {
+  const response = await fetch(`http://localhost:3000/api/farms/${id}`, {
     next: { 
       revalidate: 60,
       tags: ['farm-details', `farm-${id}`]

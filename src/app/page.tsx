@@ -4,7 +4,7 @@ import { RefreshButton } from '@/components/RefreshButton';
 import { formatNumber } from '@/utils';
 
 async function getFarmsData() {
-  const response = await fetch('http://localhost:3002/api/farms', {
+  const response = await fetch('http://localhost:3000/api/farms', {
     next: { 
       revalidate: 30,
       tags: ['farms']
