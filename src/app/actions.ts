@@ -16,7 +16,6 @@ export async function refreshData() {
     
     return {
       success: true,
-      message: 'Data refreshed successfully',
       timestamp: new Date().toISOString(),
       revalidated: ['dashboard', 'farm-details', 'api-cache']
     };

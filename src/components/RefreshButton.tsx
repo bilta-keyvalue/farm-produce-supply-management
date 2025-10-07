@@ -12,9 +12,9 @@ export function RefreshButton() {
     <form onSubmit={handleSubmit}>
       <button 
         type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 border border-blue-500"
       >
-        Refresh Data
+        Refresh
       </button>
     </form>
   );
