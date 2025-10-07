@@ -1,29 +1,7 @@
-import { getFarmById, getFarmMetrics } from '@/mock/util';
+import { getFarmMetrics, Crop } from '@/mock/util';
 import { notFound } from 'next/navigation';
+import { formatNumber, formatCurrency, formatDate } from '@/utils';
 
-export const revalidate = 60;
-
-function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-GB').format(num);
-}
-
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-GB', {
-    style: 'currency',
-    currency: 'GBP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  }).format(date);
-}
 
 function getStatusBadge(status: 'HARVESTED' | 'IN_PROGRESS') {
   const baseClasses = "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium";
@@ -34,7 +12,7 @@ function getStatusBadge(status: 'HARVESTED' | 'IN_PROGRESS') {
         HARVESTED
       </span>
     );
-  } else {
+  } else {  
     return (
       <span className={`${baseClasses} bg-yellow-100 text-yellow-800`}>
         IN_PROGRESS
@@ -43,14 +21,24 @@ function getStatusBadge(status: 'HARVESTED' | 'IN_PROGRESS') {
   }
 }
 
+const getFarm = async (id: string) => {
+  const response = await fetch(`http://localhost:3002/api/farms/${id}`, {
+    next: { 
+      revalidate: 60,
+      tags: ['farm-details', `farm-${id}`]
+    }
+  });
+  const data = await response.json();
+  const metrics = getFarmMetrics(data.farm);
+  return { farm: data.farm, metrics };
+}
+
 export default async function FarmDetailPage({ params }: { params: { id: string } }) {
-  const farm = getFarmById(params.id);
+  const { farm, metrics } = await getFarm(params.id);
   
   if (!farm) {
     notFound();
   }
-
-  const metrics = getFarmMetrics(farm);
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -79,7 +67,7 @@ export default async function FarmDetailPage({ params }: { params: { id: string 
               <div className="md:col-span-2">
                 <h3 className="text-sm font-medium text-gray-500 mb-1">Certifications</h3>
                 <div className="flex flex-wrap gap-2">
-                  {farm.certifications.map((cert, index) => (
+                  {farm.certifications.map((cert: string, index: number) => (
                     <span
                       key={index}
                       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
@@ -93,7 +81,6 @@ export default async function FarmDetailPage({ params }: { params: { id: string 
           </div>
         </div>
 
-        {/* Farm Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
             <h3 className="text-sm font-medium text-gray-500 mb-2">Annual Yield</h3>
@@ -113,7 +100,6 @@ export default async function FarmDetailPage({ params }: { params: { id: string 
           </div>
         </div>
 
-        {/* Crops Table */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">Crops</h2>
@@ -146,7 +132,7 @@ export default async function FarmDetailPage({ params }: { params: { id: string 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {farm.crops.map((crop) => (
+                {farm.crops.map((crop: Crop) => (
                   <tr key={crop.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {crop.crop_name}

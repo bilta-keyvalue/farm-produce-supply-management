@@ -1,17 +1,19 @@
-import { getAllFarms, getOverallMetrics, Farm } from '@/mock/util';
+import { getOverallMetrics, Farm } from '@/mock/util';
 import Link from 'next/link';
 import { RefreshButton } from '@/components/RefreshButton';
-
-export const revalidate = 30;
+import { formatNumber } from '@/utils';
 
 async function getFarmsData() {
-  const farms = getAllFarms();
+  const response = await fetch('http://localhost:3002/api/farms', {
+    next: { 
+      revalidate: 30,
+      tags: ['farms']
+    }
+  });
+  const data = await response.json();
+  const farms = data.farms;
   const metrics = getOverallMetrics(farms);
   return { farms, metrics };
-}
-
-function formatNumber(num: number): string {
-  return new Intl.NumberFormat('en-GB').format(num);
 }
 
 function getActiveCrops(farm: Farm): string {
@@ -53,7 +55,6 @@ export default async function Dashboard() {
           </div>
         </div>
 
-        {/* Farms Table */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="px-6 py-4 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">Farms</h2>
@@ -83,7 +84,7 @@ export default async function Dashboard() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {farms.map((farm) => (
+                {farms.map((farm: Farm) => (
                   <tr key={farm.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Link 
